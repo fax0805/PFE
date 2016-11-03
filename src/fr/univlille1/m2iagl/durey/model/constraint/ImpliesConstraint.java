@@ -32,6 +32,7 @@ public class ImpliesConstraint extends Constraint{
 			Homomorphism homomorphism = null;
 			if((homomorphism = Homomorphism.createHomomorphism(getLeftVariables(), instanceRelation))!= null
 					&& !SatisfyHelper.matchInstanceSchema(getRightRelationName(), instanceSchema, homomorphism, this)){
+				return new InstanceRelation(this, homomorphism, )
 					
 			}
 		}

@@ -47,4 +47,20 @@ public class InstanceSchema {
 	public List<InstanceRelation> get(RelationName relationName){
 		return values.get(relationName);
 	}
+	
+	public Schema getSchema(){
+		return schema;
+	}
+	
+	@Override
+	public String toString(){
+		String string = "";
+		for(RelationName relationName : values.keySet()){
+			for(InstanceRelation instanceRelation : values.get(relationName)){
+				string += instanceRelation.toString()  + "\n";
+			}
+		}
+		
+		return string;
+	}
 }

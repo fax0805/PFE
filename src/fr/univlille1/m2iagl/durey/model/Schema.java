@@ -29,4 +29,9 @@ public class Schema {
 	public Relation getInvisibleRelation(RelationName relationName){
 		return invisibleRelations.get(relationName);
 	}
+	
+	public Relation getRelation(RelationName relationName){
+		Relation relation = visibleRelations.get(relationName);
+		return relation != null ? relation : invisibleRelations.get(relationName);
+	}
 }

@@ -44,6 +44,8 @@ public abstract class Constraint {
 		return relation2[i];
 	}
 	
+	public abstract InstanceRelation getUnsatisfiedInstanceRelation(InstanceSchema instanceSchema);
+	
 	public abstract boolean isSatisfy(InstanceSchema instanceSchema);
 	
 	public abstract InstanceRelation createInstanceRelationForMatching(InstanceSchema instanceSchema);

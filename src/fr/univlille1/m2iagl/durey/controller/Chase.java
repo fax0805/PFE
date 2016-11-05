@@ -27,7 +27,29 @@ public class Chase {
 			}
 		}
 		
+		boolean added = true;
+		
+		while(added){
+			Constraint invisibleToVisibleConstraint = findConstraintNotSatisfied(invisibleToVisibleConstraints);
+			if(invisibleToVisibleConstraint != null){
+				// trouver l'instanceRelation avec laquelle ça match pas
+				// creer l'homomorphisme avec cette contraint et cette instance relation
+				// modifier toutes les instancesRelation avec cette homomorphisme
+			}
+			
+		}
+		
 		return instanceSchema;
+	}
+	
+	public Constraint findConstraintNotSatisfied(List<Constraint> constraints){
+		for(Constraint constraint : visibleToInvisibleConstraints){
+			if(!constraint.isSatisfy(instanceSchema)){
+				return constraint;
+			}
+		}
+		return null;
+			
 	}
 
 }

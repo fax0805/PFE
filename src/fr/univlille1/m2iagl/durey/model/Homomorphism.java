@@ -11,6 +11,14 @@ public class Homomorphism {
 		values = new HashMap<Character, Character>();
 	}
 	
+	public boolean containsVariable(char variable){
+		return values.containsKey(variable);
+	}
+	
+	public char get(char variable){
+		return values.get(variable);
+	}
+	
 	public void put(Character variable, Character value){
 		values.put(variable, value);
 	}

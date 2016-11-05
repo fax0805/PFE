@@ -1,8 +1,11 @@
 package fr.univlille1.m2iagl.durey.app;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import fr.univlille1.m2iagl.durey.controller.Chase;
 import fr.univlille1.m2iagl.durey.model.InstanceRelation;
 import fr.univlille1.m2iagl.durey.model.InstanceSchema;
 import fr.univlille1.m2iagl.durey.model.Relation;
@@ -19,7 +22,7 @@ public class Start {
 		RelationName sName = new RelationName("S");
 		RelationName tName = new RelationName("T");
 		
-		Relation R = new Relation(rName, 2);
+		Relation R = new Relation(rName, 3);
 		Relation S = new Relation(sName, 2);
 		Relation T = new Relation(tName, 3);
 		
@@ -31,13 +34,15 @@ public class Start {
 		Schema schema = new Schema(map, new HashMap<RelationName, Relation>());
 		
 		InstanceSchema instanceSchema = new InstanceSchema(schema);
-		instanceSchema.add(new InstanceRelation(R, new char[]{'a', 'b'}));
-		instanceSchema.add(new InstanceRelation(S, new char[]{'b', 'a'}));
+		instanceSchema.add(new InstanceRelation(T, new char[]{'a', 'a', 'a'}));
 		
-		
-		Constraint constraint = new ImpliesConstraint(rName, new char[]{'x', 'y'}, sName, new char[]{'y', 'x'});
-		
-		System.out.println(constraint.isSatisfy(instanceSchema));
+		List<Constraint> visibleToInvisibleConstraints = new ArrayList<>();
+		visibleToInvisibleConstraints.add(new ImpliesConstraint(tName, new char[]{'x', 'y', 'z'}, rName, new char[]{'w', 'x', 'y'}));
+		visibleToInvisibleConstraints.add(new ImpliesConstraint(tName, new char[]{'x', 'y', 'z'}, sName, new char[]{'y', 'z'}));
+
+		Chase chase = new Chase(instanceSchema, visibleToInvisibleConstraints, new ArrayList<Constraint>());
+		InstanceSchema newInstanceSchema = chase.run();
+		System.out.println(newInstanceSchema.toString());
 
 	}
 }

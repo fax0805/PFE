@@ -2,7 +2,10 @@ package fr.univlille1.m2iagl.durey.controller;
 
 import java.util.List;
 
+import fr.univlille1.m2iagl.durey.model.Homomorphism;
+import fr.univlille1.m2iagl.durey.model.InstanceRelation;
 import fr.univlille1.m2iagl.durey.model.InstanceSchema;
+import fr.univlille1.m2iagl.durey.model.Relation;
 import fr.univlille1.m2iagl.durey.model.constraint.Constraint;
 
 public class Chase {
@@ -30,11 +33,13 @@ public class Chase {
 		boolean added = true;
 		
 		while(added){
+			added = false;
 			Constraint invisibleToVisibleConstraint = findConstraintNotSatisfied(invisibleToVisibleConstraints);
 			if(invisibleToVisibleConstraint != null){
-				// trouver l'instanceRelation avec laquelle ça match pas
-				// creer l'homomorphisme avec cette contraint et cette instance relation
-				// modifier toutes les instancesRelation avec cette homomorphisme
+				InstanceRelation instanceRelation = invisibleToVisibleConstraint.getUnsatisfiedInstanceRelation(instanceSchema);
+				Homomorphism homomorphism = Homomorphism.createHomomorphism(invisibleToVisibleConstraint.getRightVariables(), instanceRelation);
+				instanceSchema.modifyInstanceWithHomomorphism(homomorphism);
+				added = true;
 			}
 			
 		}
@@ -51,5 +56,6 @@ public class Chase {
 		return null;
 			
 	}
+	
 
 }

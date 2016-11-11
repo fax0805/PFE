@@ -26,6 +26,14 @@ public class InstanceSchema {
 		this.values = instanceSchema.values;
 	}
 	
+	public void modifyInstanceWithHomomorphism(Homomorphism homomorphism){
+		for(RelationName relationName : values.keySet()){
+			for(InstanceRelation instanceRelation : values.get(relationName)){
+				instanceRelation.modifyInstanceWithHomomorphism(homomorphism);
+			}
+		}
+	}
+	
 	private void fillKeys(){
 		for(RelationName relationName : schema.visibleKeySet()){
 			values.put(relationName, new ArrayList<InstanceRelation>());

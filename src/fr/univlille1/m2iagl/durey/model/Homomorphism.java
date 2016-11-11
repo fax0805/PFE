@@ -24,6 +24,9 @@ public class Homomorphism {
 	}
 	
 	public boolean isCorrectValue(Character variable, Character value){
+		
+		if(!values.containsKey(variable))
+			return true;
 		return values.get(variable).equals(value);
 	}
 	

@@ -23,6 +23,21 @@ public class InstanceRelation {
 		return relation.getRelationName();
 	}
 	
+	
+	public void modifyInstanceWithHomomorphism(Homomorphism homomorphism){
+		char [] newValues = new char[values.length];
+		
+		for(int i=0;i<values.length;i++){
+			char c = values[i];
+			if(homomorphism.containsVariable(c)){
+				char replacement = homomorphism.get(c);
+				newValues[i] = replacement;
+			} else {
+				newValues[i] = c;
+			}
+		}
+	}
+	
 	public int getArity(){
 		return relation.getArity();
 	}

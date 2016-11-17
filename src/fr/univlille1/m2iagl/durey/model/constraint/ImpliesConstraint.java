@@ -18,8 +18,9 @@ public class ImpliesConstraint extends Constraint{
 		for(InstanceRelation instanceRelation : instanceSchema.get(getLeftRelationName())){
 			Homomorphism homomorphism = null;
 			if((homomorphism = Homomorphism.createHomomorphism(getLeftVariables(), instanceRelation))!= null){
-				if(!SatisfyHelper.matchInstanceSchema(getRightRelationName(), instanceSchema, homomorphism, this))
+				if(!SatisfyHelper.matchInstanceSchema(getRightRelationName(), instanceSchema, homomorphism, this)){
 					return false;
+				}
 			}
 		}
 		
@@ -43,8 +44,9 @@ public class ImpliesConstraint extends Constraint{
 		for(InstanceRelation instanceRelation : instanceSchema.get(getLeftRelationName())){
 			Homomorphism homomorphism = null;
 			if((homomorphism = Homomorphism.createHomomorphism(getLeftVariables(), instanceRelation))!= null){
-				if(!SatisfyHelper.matchInstanceSchema(getRightRelationName(), instanceSchema, homomorphism, this)){
-					return instanceRelation;
+				InstanceRelation instanceRelationNonMatching = null;
+				if((instanceRelationNonMatching = SatisfyHelper.getInstanceRelationNonMatching(getRightRelationName(), instanceSchema, homomorphism, this)) != null){
+					return instanceRelationNonMatching;
 				}
 			}
 		}

@@ -1,5 +1,9 @@
 package fr.univlille1.m2iagl.durey.model.constraint;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import fr.univlille1.m2iagl.durey.model.InstanceRelation;
 import fr.univlille1.m2iagl.durey.model.InstanceSchema;
 import fr.univlille1.m2iagl.durey.model.RelationName;
@@ -17,6 +21,16 @@ public abstract class Constraint {
 		this.relation1 = relation1;
 		this.relationName2 = relationName2;
 		this.relation2 = relation2;
+	}
+	
+	public List<Integer> getPosOfVariableIntoLeftRelation(char variable){
+		List<Integer> list = new ArrayList<Integer>();
+		for(int i=0;i<relation1.length;i++){
+			if(relation1[i] == variable){
+				list.add(i);
+			}
+		}
+		return list;
 	}
 	
 	
@@ -50,6 +64,9 @@ public abstract class Constraint {
 	
 	public abstract InstanceRelation createInstanceRelationForMatching(InstanceSchema instanceSchema);
 	
+	public String toString(){
+		return relationName1 + "(" + Arrays.toString(relation1) + ") -> " + relationName2 + "(" + Arrays.toString(relation2) + ")"; 
+	}
 	
 
 }

@@ -14,10 +14,11 @@ public class Chase {
 	private List<Constraint> visibleToInvisibleConstraints;
 	private List<Constraint> invisibleToVisibleConstraints;
 	
-	public Chase(InstanceSchema instanceSchema, List<Constraint> visibleToInvisibleConstraints, List<Constraint> invisibleToVisibleConstraint){
+	public Chase(InstanceSchema instanceSchema, List<Constraint> visibleToInvisibleConstraints, List<Constraint> invisibleToVisibleConstraints){
 		this.instanceSchema = instanceSchema;
 		this.visibleToInvisibleConstraints = visibleToInvisibleConstraints;
-		this.invisibleToVisibleConstraints = invisibleToVisibleConstraint;
+		this.invisibleToVisibleConstraints = invisibleToVisibleConstraints;
+		
 	}
 	
 	public InstanceSchema run(){
@@ -29,16 +30,18 @@ public class Chase {
 				instanceSchema.add(constraint.createInstanceRelationForMatching(instanceSchema));
 			}
 		}
-		
+
 		boolean added = true;
 		
 		while(added){
 			added = false;
 			Constraint invisibleToVisibleConstraint = findConstraintNotSatisfied(invisibleToVisibleConstraints);
+			
 			if(invisibleToVisibleConstraint != null){
 				InstanceRelation instanceRelation = invisibleToVisibleConstraint.getUnsatisfiedInstanceRelation(instanceSchema);
 				Homomorphism homomorphism = Homomorphism.createHomomorphism(invisibleToVisibleConstraint.getRightVariables(), instanceRelation);
-				instanceSchema.modifyInstanceWithHomomorphism(homomorphism);
+				
+				instanceSchema.modifyInstanceWithHomomorphism(homomorphism, invisibleToVisibleConstraint);
 				added = true;
 			}
 			
@@ -48,7 +51,7 @@ public class Chase {
 	}
 	
 	public Constraint findConstraintNotSatisfied(List<Constraint> constraints){
-		for(Constraint constraint : visibleToInvisibleConstraints){
+		for(Constraint constraint : constraints){
 			if(!constraint.isSatisfy(instanceSchema)){
 				return constraint;
 			}

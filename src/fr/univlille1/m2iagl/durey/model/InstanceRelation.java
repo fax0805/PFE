@@ -1,5 +1,8 @@
 package fr.univlille1.m2iagl.durey.model;
 
+import java.util.Arrays;
+
+import fr.univlille1.m2iagl.durey.model.constraint.Constraint;
 
 public class InstanceRelation {
 
@@ -24,18 +27,26 @@ public class InstanceRelation {
 	}
 	
 	
-	public void modifyInstanceWithHomomorphism(Homomorphism homomorphism){
+	public void modifyInstanceWithHomomorphismAndConstraint(Homomorphism homomorphism, Constraint constraint){
 		char [] newValues = new char[values.length];
 		
-		for(int i=0;i<values.length;i++){
-			char c = values[i];
-			if(homomorphism.containsVariable(c)){
-				char replacement = homomorphism.get(c);
-				newValues[i] = replacement;
-			} else {
-				newValues[i] = c;
+		for(int i=0;i<constraint.getRightVariables().length;i++){
+			char variable = constraint.getRightVariable(i);
+			if(homomorphism.containsVariable(variable)){
+				char replacement = homomorphism.get(variable);
+				for(int j : constraint.getPosOfVariableIntoLeftRelation(variable)){
+					newValues[j] = replacement;
+				}
 			}
 		}
+		
+		for(int i=0;i<newValues.length;i++){
+			if(newValues[i] == '\0'){
+				newValues[i] = values[i];
+			}
+		}
+		
+		values = newValues;
 	}
 	
 	public int getArity(){

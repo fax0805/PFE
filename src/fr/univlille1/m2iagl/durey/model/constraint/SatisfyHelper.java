@@ -31,4 +31,16 @@ public class SatisfyHelper {
 		return true;
 		
 	}
+	
+	
+	public static InstanceRelation getInstanceRelationNonMatching(RelationName relationName, InstanceSchema instanceSchema, Homomorphism homomorphism, Constraint constraint){
+		List<InstanceRelation> instanceRelations = instanceSchema.get(relationName);
+		
+		for(InstanceRelation instanceRelation : instanceRelations){
+			if(!matchInstanceRelation(instanceRelation, homomorphism, constraint))
+				return instanceRelation;
+		}
+		
+		return null;
+	}
 }

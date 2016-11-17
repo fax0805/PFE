@@ -21,26 +21,42 @@ public class Start {
 		RelationName rName = new RelationName("R");
 		RelationName sName = new RelationName("S");
 		RelationName tName = new RelationName("T");
+		RelationName uName = new RelationName("U");
+		RelationName vName = new RelationName("V");
+
 		
 		Relation R = new Relation(rName, 3);
 		Relation S = new Relation(sName, 2);
 		Relation T = new Relation(tName, 3);
+		Relation U = new Relation(uName, 3);
+		Relation V = new Relation(vName, 2);
 		
-		Map<RelationName, Relation> map = new HashMap<>();
-		map.put(new RelationName("R"), R);
-		map.put(new RelationName("S"), S);
-		map.put(new RelationName("T"), T);
+		Map<RelationName, Relation> visibleRelations = new HashMap<>();
+		visibleRelations.put(new RelationName("R"), R);
+		visibleRelations.put(new RelationName("S"), S);
+		visibleRelations.put(new RelationName("T"), T);
+		
+		Map<RelationName, Relation> invisibleRelations = new HashMap<>();
+		invisibleRelations.put(new RelationName("U"), U);
+		invisibleRelations.put(new RelationName("V"), V);
 
-		Schema schema = new Schema(map, new HashMap<RelationName, Relation>());
+		Schema schema = new Schema(visibleRelations, invisibleRelations);
 		
 		InstanceSchema instanceSchema = new InstanceSchema(schema);
+		instanceSchema.add(new InstanceRelation(R, new char[]{'a', 'a', 'a'}));
+		instanceSchema.add(new InstanceRelation(S, new char[]{'a', 'a'}));
 		instanceSchema.add(new InstanceRelation(T, new char[]{'a', 'a', 'a'}));
 		
 		List<Constraint> visibleToInvisibleConstraints = new ArrayList<>();
-		visibleToInvisibleConstraints.add(new ImpliesConstraint(tName, new char[]{'x', 'y', 'z'}, rName, new char[]{'w', 'x', 'y'}));
-		visibleToInvisibleConstraints.add(new ImpliesConstraint(tName, new char[]{'x', 'y', 'z'}, sName, new char[]{'y', 'z'}));
+		visibleToInvisibleConstraints.add(new ImpliesConstraint(tName, new char[]{'x', 'y', 'z'}, uName, new char[]{'w', 'x', 'y'}));
+		visibleToInvisibleConstraints.add(new ImpliesConstraint(tName, new char[]{'x', 'y', 'z'}, vName, new char[]{'y', 'z'}));
+		
+		List<Constraint> invisibleToVisibleConstraints = new ArrayList<>();
+		invisibleToVisibleConstraints.add(new ImpliesConstraint(uName, new char[]{'w', 'x', 'y'}, sName, new char[]{'w', 'x'}));
+		
+		
 
-		Chase chase = new Chase(instanceSchema, visibleToInvisibleConstraints, new ArrayList<Constraint>());
+		Chase chase = new Chase(instanceSchema, visibleToInvisibleConstraints, invisibleToVisibleConstraints);
 		InstanceSchema newInstanceSchema = chase.run();
 		System.out.println(newInstanceSchema.toString());
 

@@ -31,7 +31,7 @@ public class Homomorphism {
 	}
 	
 	public static Homomorphism createHomomorphism(char [] variables, InstanceRelation instanceRelation){
-		
+				
 		Homomorphism homomorphism = new Homomorphism();
 		
 		for(int i=0;i<variables.length;i++){
@@ -46,5 +46,9 @@ public class Homomorphism {
 		}
 		
 		return homomorphism;
+	}
+	
+	public String toString(){
+		return values.toString();
 	}
 }

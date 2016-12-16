@@ -1,72 +1,112 @@
 package fr.univlille1.m2iagl.durey.model.constraint;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import fr.univlille1.m2iagl.durey.model.InstanceRelation;
+import fr.univlille1.m2iagl.durey.controller.Factory;
+import fr.univlille1.m2iagl.durey.model.Fait;
+import fr.univlille1.m2iagl.durey.model.Homomorphism;
 import fr.univlille1.m2iagl.durey.model.InstanceSchema;
 import fr.univlille1.m2iagl.durey.model.RelationName;
 
 public abstract class Constraint {
-	
-	private RelationName relationName1;
-	private char[] relation1;
-	
-	private RelationName relationName2;
-	private char[] relation2;
-	
-	public Constraint(RelationName relationName1, char[] relation1, RelationName relationName2, char[] relation2){
-		this.relationName1 = relationName1;
-		this.relation1 = relation1;
-		this.relationName2 = relationName2;
-		this.relation2 = relation2;
+
+	private Map<RelationName, ConstraintElement []> left;
+	private ConstraintElement right;
+
+
+	public Constraint(RelationName[] leftRelationNames, char[][][] leftVars, RelationName rightRelationName, char[] rightVars){
+		left = Factory.createConstraintElements(leftRelationNames, leftVars);
+		right = Factory.createConstraintElement(rightRelationName, rightVars);
 	}
-	
-	public List<Integer> getPosOfVariableIntoLeftRelation(char variable){
+
+	public Constraint(Map<RelationName, ConstraintElement[]> left, ConstraintElement right){
+		this.left = left;
+		this.right = right;
+	}
+
+
+	public Constraint(RelationName relationName1, char[] relation1, RelationName relationName2, char[] relation2){
+		ConstraintElement constraintElementLeft = new ConstraintElement(relationName1, relation1);
+		ConstraintElement constraintElementRight = new ConstraintElement(relationName2, relation2);
+
+		Map<RelationName, ConstraintElement[]> map = new HashMap<RelationName, ConstraintElement[]>();
+		map.put(relationName1, new ConstraintElement[]{constraintElementLeft});
+
+		this.left = map;
+		this.right = constraintElementRight;
+	}
+
+	public List<Integer> getPosOfVariableIntoLeftRelation(int constraintInd, int pos, char variable){
 		List<Integer> list = new ArrayList<Integer>();
-		for(int i=0;i<relation1.length;i++){
-			if(relation1[i] == variable){
+
+		ConstraintElement element = left.get(constraintInd)[pos];
+		for(int i=0;i<element.getVariables().length;i++){
+			if(element.getVariables()[i] == variable){
 				list.add(i);
 			}
 		}
 		return list;
 	}
-	
-	
-	public RelationName getLeftRelationName(){
-		return relationName1;
+
+
+	public Set<RelationName> getLeftRelationNames(){
+		return left.keySet();
 	}
 	
-	public char[] getLeftVariables(){
-		return relation1;
+	public int getSizeOf(RelationName relationName){
+		return left.get(relationName).length;
 	}
-	
-	public char getLeftVariable(int i){
-		return relation1[i];
+
+	public char[] getVariablesOf(RelationName relationName, int pos){
+		return left.get(relationName)[pos].getVariables();
 	}
-	
+
+	public char getLeftVariable(RelationName relationName, int pos, int j){
+		return getVariablesOf(relationName, pos)[j];
+	}
+
 	public RelationName getRightRelationName(){
-		return relationName2;
+		return right.getRelationName();
 	}
-	
+
 	public char[] getRightVariables(){
-		return relation2;
+		return right.getVariables();
 	}
-	
+
 	public char getRightVariable(int i){
-		return relation2[i];
+		return getRightVariables()[i];
 	}
-	
-	public abstract InstanceRelation getUnsatisfiedInstanceRelation(InstanceSchema instanceSchema);
-	
-	public abstract boolean isSatisfy(InstanceSchema instanceSchema);
-	
-	public abstract InstanceRelation createInstanceRelationForMatching(InstanceSchema instanceSchema);
-	
+
+	public abstract Fait getUnsatisfiedInstanceRelation(InstanceSchema instanceSchema);
+
+	public abstract Homomorphism satisfy(InstanceSchema instanceSchema);
+
+	public abstract boolean satisfyHomomorphism(InstanceSchema instanceSchema, Homomorphism homomorphism);
+
+	public abstract Fait createFaitForMatching(InstanceSchema instanceSchema);
+
 	public String toString(){
-		return relationName1 + "(" + Arrays.toString(relation1) + ") -> " + relationName2 + "(" + Arrays.toString(relation2) + ")"; 
+
+		String string = "";
+		int i=0, j=0;
+		for(RelationName relationName : left.keySet()){
+			for(ConstraintElement constraintElement : left.get(relationName)){
+
+				if(i != left.size() - 1 || j != left.get(relationName).length - 1)
+					string += constraintElement.toString() + ", ";
+				else
+					string += constraintElement.toString();
+				j++;
+			}
+			i++;
+
+		}
+		return string + " -> " + right.toString();
 	}
-	
+
 
 }

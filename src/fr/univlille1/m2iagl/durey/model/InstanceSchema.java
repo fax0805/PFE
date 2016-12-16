@@ -14,7 +14,7 @@ public class InstanceSchema {
 
 	private Schema schema;
 
-	Map<RelationName, List<InstanceRelation>> values;
+	Map<RelationName, List<Fait>> values;
 
 	public InstanceSchema(Schema schema){
 		this.schema = schema;
@@ -27,24 +27,36 @@ public class InstanceSchema {
 		this.schema = instanceSchema.schema;
 		this.values = instanceSchema.values;
 	}
+	
+	public static InstanceSchema createBasicInstanceSchema(Schema schema){
+		InstanceSchema instanceSchema = new InstanceSchema(schema);
+		
+		
+		for(RelationName relationName : schema.visibleKeySet()){
+			instanceSchema.add(Fait.createBasicFait(schema.getRelation(relationName)));
+		}
+		return instanceSchema;
+	}
 
 	public void modifyInstanceWithHomomorphism(Homomorphism homomorphism, Constraint constraint){
-		for(InstanceRelation instanceRelation : values.get(constraint.getLeftRelationName())){
-			instanceRelation.modifyInstanceWithHomomorphismAndConstraint(homomorphism, constraint);
+		for(RelationName relationName : constraint.getLeftRelationNames()){
+			for(Fait fait : values.get(relationName)){
+				fait.modifyInstanceWithHomomorphism(homomorphism);
+			}
 		}
 	}
 
 	private void fillKeys(){
 		for(RelationName relationName : schema.visibleKeySet()){
-			values.put(relationName, new ArrayList<InstanceRelation>());
+			values.put(relationName, new ArrayList<Fait>());
 		}
 
 		for(RelationName relationName : schema.invisibleKeySet()){
-			values.put(relationName, new ArrayList<InstanceRelation>());			
+			values.put(relationName, new ArrayList<Fait>());			
 		}
 	}
 
-	public void add(InstanceRelation instanceRelation){
+	public void add(Fait instanceRelation){
 		values.get(instanceRelation.getRelationName()).add(instanceRelation);
 	}
 
@@ -52,7 +64,7 @@ public class InstanceSchema {
 		return values.keySet();
 	}
 
-	public List<InstanceRelation> get(RelationName relationName){
+	public List<Fait> get(RelationName relationName){
 		return values.get(relationName);
 	}
 
@@ -64,7 +76,7 @@ public class InstanceSchema {
 	public String toString(){
 		String string = "";
 		for(RelationName relationName : values.keySet()){
-			for(InstanceRelation instanceRelation : values.get(relationName)){
+			for(Fait instanceRelation : values.get(relationName)){
 				string += instanceRelation.toString()  + "\n";
 			}
 		}

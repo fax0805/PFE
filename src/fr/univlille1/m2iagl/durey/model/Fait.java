@@ -4,12 +4,12 @@ import java.util.Arrays;
 
 import fr.univlille1.m2iagl.durey.model.constraint.Constraint;
 
-public class InstanceRelation {
+public class Fait {
 
 	private Relation relation;
 	private char[] values;
 	
-	public InstanceRelation(Relation relation, char [] variables, Homomorphism homomorphism){
+	public Fait(Relation relation, char [] variables, Homomorphism homomorphism){
 		this.relation = relation;
 		values = new char[variables.length];
 		
@@ -17,9 +17,18 @@ public class InstanceRelation {
 	}
 	
 	
-	public InstanceRelation(Relation relation, char [] values){
+	public Fait(Relation relation, char [] values){
 		this.relation = relation;
 		this.values = values;
+	}
+	
+	public static Fait createBasicFait(Relation relation){
+		char[] variables = new char[relation.getArity()];
+		for(int i=0;i<relation.getArity();i++){
+			variables[i] = Value.basicVar;
+		}
+		
+		return new Fait(relation, variables);
 	}
 	
 	public RelationName getRelationName(){
@@ -27,26 +36,14 @@ public class InstanceRelation {
 	}
 	
 	
-	public void modifyInstanceWithHomomorphismAndConstraint(Homomorphism homomorphism, Constraint constraint){
-		char [] newValues = new char[values.length];
+	public void modifyInstanceWithHomomorphism(Homomorphism homomorphism){
 		
-		for(int i=0;i<constraint.getRightVariables().length;i++){
-			char variable = constraint.getRightVariable(i);
-			if(homomorphism.containsVariable(variable)){
-				char replacement = homomorphism.get(variable);
-				for(int j : constraint.getPosOfVariableIntoLeftRelation(variable)){
-					newValues[j] = replacement;
-				}
+		for(int i=0;i<values.length;i++){
+			if(homomorphism.containsVariable(values[i])){
+				values[i] = homomorphism.get(values[i]);
 			}
 		}
-		
-		for(int i=0;i<newValues.length;i++){
-			if(newValues[i] == '\0'){
-				newValues[i] = values[i];
-			}
-		}
-		
-		values = newValues;
+	
 	}
 	
 	public int getArity(){

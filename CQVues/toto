@@ -1,0 +1,106 @@
+PQI(Sv, Sh, C, Q, I)
+
+pour tout J, Pi(Sv)(J) = I, J satisfy C, J satisfy Q
+
+CQ vues
+
+
+
+Height of the tree = R x n^r x (| Q | + 1)
+R : nb Relation
+n : nb of values
+r : arity
+Q : nb of constraints
+
+Size of the tree = | nb of facts | ^ (height) +1
+
+nb of facts : max(foreach relation, get the nb of constraints which can be matched)
+
+corriger la génération : toutes les variables doivent être différentes
+
+--------------------------------------------------------------------------------------
+
+Intro : 
+
+But : faire un prototype pour vérifier des trous de sécurité dans des vues de base de données
+Est ce qu'on peut déduire des choses qui auraient dû rester cachées.
+
+Expliquer : ce qu'est une vue de base de données, un tour de sécurité
+
+Motivation :
+Les bases de données n'affichent pas toutes les données mais seulement une partie, des vues.
+Ces vues sont définies par des formules logiques.
+Un utilisateur peut déduire des vues et de formules logiques des faits cachés
+Faire un exemple (pourquoi pas avec le schém de Cristal)
+
+
+De plus, on connaît des propriétés sur les bases de données comme des clefs étrangères. Avec les vues et les clefs, on peut déduire de nouvelles choses.
+
+
+V1, V2, Phi1, Phi2, C => permet de déduire un secret
+
+Pour Phi1, Phi2, C, S; Est ce qu'il existe V1, V2 tq Phi1, Phi2, C je peux déduire S
+
+Security by Design -> on s'intéresse au schéma et pas aux données
+
+
+
+Résultats théoriques généraux -> Papiers LICS
+-> faire un prototype pour un cadre restreint mais pratique pour montrer la faisabilité
+
+-----
+
+
+Pq c'est compliqué : Algo en Pspace complet
+Pas de méthodes existantes, approche complexe.
+
+Préliminaire : 
+Qu'est ce qu'une base de données : Livre Fundation of database (sur Internet en anglais)
+Vue : CQ vue
+Contrainte : dépendance d'inclusion
+Secret : CQ
+
+Technique : 
+- évaluation CQ
+- Homomorphisme
+- Chase
+
+Définition des problèmes
+PQI
+
+Il existe PQI
+
+Fin des préliminaires
+
+Résolution :
+
+Il existe PQI
+Citer : LICS : il existe PQI equivalent PQI avec I{a}
+Attention à la citation.
+
+Se restreindre à PQI I{a}
+
+D'abord : Faire la résolution d'abord avec les CQ view.
+Expliquer l'algo, prendre un exemple
+NP Complet (LICS)
+Chase + unification -> correcte (LICS)
+
+Expériences : montrer l'intérêt et les limites
+Générateur
+
+2e Clef et atomic vue : atomic vue est une vue définie par une seule table , genre R(x,y) -> S(y, z)
+supprimer les colonnes et ne pas faire d'unification OU faire l'unification APRES la génération avec les clefs
+expliquer pourquoi on a pas d'arbre mais juste un compteur
+
+expériences :
+
+
+perspective pour la suite : unifier les 2 algos : CQ view et clef (qui est le cas pratique en général)
+
+
+-------------------------------------------------------
+
+Regarder le cycles le plus grand avec un élément de la requete dedans (car p-e des cycles plus grands mais aps d'éléments de requêtes dedans)
+Regarder redondance entre éléments homomorphique s(et donc arrêter génération)
+
+Regarder Schéma cristal pour nombre de clef étrangère

@@ -1,0 +1,10 @@
+Nb relations = 10
+Relation arity = 5
+Nb Constraints = 1000
+Constraint size = 5
+Visible Relation = 0.3
+
+Nb Facts générés par contrainte visible = 1
+Nb Facts après le chase = 16
+
+Time : 224 ms

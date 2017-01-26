@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class StartGenerator {
-	
+
 	public static void main(String [] args) throws IOException, InterruptedException{
 
 		// (int nbRelations, int relationArity, int nbConstraint, int constraintSize, double visibleRelation, double visibleToInvisibleConstraint)
@@ -27,16 +27,18 @@ public class StartGenerator {
 		System.out.println("InstanceSchema : " + instanceSchema);
 		System.exit(1);
 		 */
-		
-		PrintWriter printWriter = new PrintWriter(new File("results/comparaison.csv"));
-		printWriter.println("nbRelations, relationArity, nbConstraints, constraintSize, visibleRelations, nbKeyConstraints, initialSchemaSize, finalSchemaSize, time (ms)");
 
-		int[] nbsRelations = new int[]{10};
-		int[] relationArities = new int[]{2};
-		int[] nbsConstraints = new int[]{8};
+		PrintWriter printWriter = new PrintWriter(new File("results/comparaison.csv"));
+		printWriter.println("nbRelations, relationArity, nbConstraints, constraintSize, visibleRelations, nbKeyConstraints, initialSchemaSize, finalSchemaSize, time (ms), nbCycles, biggestCycle");
+
+		int[] nbsRelations = new int[]{200};
+		int[] relationArities = new int[]{8};
+		int[] nbsConstraints = new int[]{20};
 		int[] constraintSizes = new int[]{1};
-		int[] nbsKeyConstraints = new int[]{5};
+		int[] nbsKeyConstraints = new int[]{81};
 		double[] visiblesRelations = new double[]{0.5};
+
+		int nbTimes = 10;
 
 		int i=0;
 
@@ -46,17 +48,20 @@ public class StartGenerator {
 					for(int constraintSize : constraintSizes){
 						for(int nbKeyConstraints : nbsKeyConstraints){
 							for(double visibleRelations : visiblesRelations){
-								StartSpecifiedChase.start(printWriter, nbRelations, relationArity, nbConstraints, constraintSize, nbKeyConstraints, visibleRelations);
 
-								System.out.println("i : " + i);
-								i++;
+								for(int j=0;j<nbTimes;j++){
+									StartSpecifiedChase.start(printWriter, nbRelations, relationArity, nbConstraints, constraintSize, nbKeyConstraints, visibleRelations);
+
+									System.out.println("i : " + i);
+									i++;
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-		
+
 		printWriter.close();
 	}
 }

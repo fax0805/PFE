@@ -11,7 +11,6 @@ import fr.univlille1.m2iagl.durey.model.InstanceSchema;
 import fr.univlille1.m2iagl.durey.model.Relation;
 import fr.univlille1.m2iagl.durey.model.RelationName;
 import fr.univlille1.m2iagl.durey.model.Schema;
-import fr.univlille1.m2iagl.durey.model.constraint.ImpliesConstraint;
 import fr.univlille1.m2iagl.durey.model.constraint.InvisibleToInvisibleConstraint;
 import fr.univlille1.m2iagl.durey.model.constraint.InvisibleToVisibleConstraint;
 import fr.univlille1.m2iagl.durey.model.constraint.VisibleToInvisibleConstraint;

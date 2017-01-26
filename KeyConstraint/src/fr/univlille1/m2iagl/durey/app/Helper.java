@@ -14,7 +14,7 @@ public class Helper {
 	}
 	
 	public static int computeTreeHeight(int nbInvisibleRelations, int arity){
-		return (int)(nbInvisibleRelations * Math.pow(arity, arity));
+		return (int)(nbInvisibleRelations * /*Math.pow(arity, arity)*/ 1);
 	}
 
 }

@@ -21,6 +21,7 @@ public class Generator {
 	private int constraintSize;
 	private int nbKeyConstraints;
 	private double visibleRelation;
+	private int biggestCycleSize;
 
 	private Schema schema;
 	private List<InvisibleToVisibleConstraint> invisibleToVisible;
@@ -30,13 +31,14 @@ public class Generator {
 	private List<Character> alreadyUsed;
 	private char current = 'a';
 
-	public Generator(int nbRelations, int relationArity, int nbConstraint, int constraintSize, int nbKeyConstraints, double visibleRelation){
+	public Generator(int nbRelations, int relationArity, int nbConstraint, int constraintSize, int nbKeyConstraints, double visibleRelation, int biggestCycleSize){
 		this.nbRelations = nbRelations;
 		this.relationArity = relationArity;
 		this.nbConstraint = nbConstraint;
 		this.constraintSize = constraintSize;
 		this.visibleRelation = visibleRelation;
 		this.nbKeyConstraints = nbKeyConstraints;
+		this.biggestCycleSize = biggestCycleSize;
 
 		this.invisibleToVisible = new ArrayList<>();
 		this.visibleToInvisible = new ArrayList<>();
@@ -78,9 +80,13 @@ public class Generator {
 
 		}
 	}
-	
+
 	private void addKeyConstraints(){
-		for(int constraintInd=0;constraintInd<nbKeyConstraints;constraintInd++){
+
+		createAndAddKeyConstraintCycle();
+
+		System.out.println("Keys : " + keyConstraints);
+		for(int constraintInd=0;constraintInd<nbKeyConstraints-biggestCycleSize;constraintInd++){
 			keyConstraints.add(createKeyConstraint());
 		}
 	}
@@ -109,50 +115,50 @@ public class Generator {
 		char[] leftVars = invisibleToVisible.getRightVariables();
 
 		char [][][] rightVars = new char[constraintSize][1][relationArity];
-		
+
 		List<RelationName> rightRelationNames = new ArrayList<RelationName>();
 		List<RelationName> relationNames = new ArrayList<RelationName>(invisibleToVisible.getLeftConstraintElementGroup().keySet());
 
 		ConstraintElementGroup constraintElementGroup = invisibleToVisible.getLeftConstraintElementGroup();
-		
+
 		int cpt = 0;
 		for(int i=0;i<relationNames.size();i++){
 			RelationName relationName = relationNames.get(i);
 			ConstraintElement[] constraintElement = constraintElementGroup.get(relationName);
 			for(int j=0;j<constraintElement.length;j++){
-				
+
 				rightRelationNames.add(relationName);
 				rightVars[cpt][0] = invisibleToVisible.getLeftConstraintElementGroup().getVariablesOf(relationName, j);
-				
+
 				cpt++;
 			}
 		}
-		
+
 		return new VisibleToInvisibleConstraint(leftRelationName, leftVars, rightRelationNames.toArray(new RelationName[rightRelationNames.size()]), rightVars);
 	}
-	
+
 	private InvisibleToInvisibleConstraint createKeyConstraint(){
 		List<RelationName> invisibleRelations = new ArrayList<>(schema.invisibleKeySet());
 		Random r = new Random();
 		RelationName relationName1 = invisibleRelations.get(r.nextInt(invisibleRelations.size()));
 		RelationName relationName2 = invisibleRelations.get(r.nextInt(invisibleRelations.size()));
-		
+
 		int leftRelationArity = schema.getInvisibleRelation(relationName1).getArity();
 		int rightRelationArity = schema.getInvisibleRelation(relationName2).getArity();
-		
+
 		char[] c1 = new char[leftRelationArity];
-		
-		int nbColumnsExported = r.nextInt(leftRelationArity);
+
+		int nbColumnsExported = 1;
 		List<Integer> leftPosOfColumnsExported = getNbRandomPos(nbColumnsExported, leftRelationArity);
-		
+
 		for(int i=0;i<leftRelationArity;i++){
 			c1[i] = current++;
 		}
-		
+
 		char[] c2 = new char[rightRelationArity];
 
 		List<Integer> rightPosOfColumnsExported = getNbRandomPos(nbColumnsExported, rightRelationArity);
-		
+
 		for(int i=0;i<rightRelationArity;i++){
 			if(rightPosOfColumnsExported.contains(i)){
 				c2[i] = c1[leftPosOfColumnsExported.get(r.nextInt(leftPosOfColumnsExported.size()))];
@@ -160,11 +166,64 @@ public class Generator {
 				c2[i] = current++;
 			}
 		}
-		
+
 		return new InvisibleToInvisibleConstraint(relationName1, c1, relationName2, c2);
-		
+
 	}
-	
+
+	private void createAndAddKeyConstraintCycle(){
+		List<RelationName> invisibleRelations = new ArrayList<>(schema.invisibleKeySet());
+		Random r = new Random();
+		RelationName previousRelationName = invisibleRelations.get(r.nextInt(invisibleRelations.size()));
+
+		int previousRelationArity = schema.getInvisibleRelation(previousRelationName).getArity();
+
+		RelationName relationName = null;
+		int relationArity;
+
+		List<RelationName> used = new ArrayList<>();
+		used.add(previousRelationName);
+
+
+		for(int i=0;i<=biggestCycleSize;i++){
+			if(i != biggestCycleSize -1){
+				while(relationName == null || used.contains(relationName))
+					relationName = invisibleRelations.get(r.nextInt(invisibleRelations.size()));
+			} else
+				relationName = used.get(0);
+
+			relationArity = schema.getInvisibleRelation(relationName).getArity();
+
+			char[] c1 = new char[previousRelationArity];
+
+			int nbColumnsExported = 1;
+			List<Integer> leftPosOfColumnsExported = getNbRandomPos(nbColumnsExported, previousRelationArity);
+
+			for(int j=0;j<previousRelationArity;j++){
+				c1[j] = current++;
+			}
+
+			char[] c2 = new char[relationArity];
+
+			List<Integer> rightPosOfColumnsExported = getNbRandomPos(nbColumnsExported, relationArity);
+
+			for(int j=0;j<relationArity;j++){
+				if(rightPosOfColumnsExported.contains(j)){
+					c2[j] = c1[leftPosOfColumnsExported.get(r.nextInt(leftPosOfColumnsExported.size()))];
+				} else {
+					c2[j] = current++;
+				}
+			}
+
+			keyConstraints.add(new InvisibleToInvisibleConstraint(previousRelationName, c1, relationName, c2));
+
+			used.add(relationName);
+			previousRelationName = new RelationName(relationName.getName());
+			previousRelationArity = relationArity;
+
+		}
+	}
+
 	private List<Integer> getNbRandomPos(int cpt, int limit){
 		Random r = new Random();
 		List<Integer> list = new ArrayList<Integer>();
@@ -175,7 +234,7 @@ public class Generator {
 			}
 			list.add(newPos);
 		}
-		
+
 		return list;
 	}
 
@@ -229,7 +288,7 @@ public class Generator {
 	public List<VisibleToInvisibleConstraint> getVisibleToInvisible(){
 		return visibleToInvisible;
 	}	
-	
+
 	public List<InvisibleToInvisibleConstraint> getKeyConstraints(){
 		return keyConstraints;
 	}

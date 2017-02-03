@@ -50,7 +50,7 @@ public class Chase {
 	
 	private void doUnificiation(){
 		
-		boolean added = false;
+		boolean added = true;
 		while(added){
 			added = false;
 			Association association = findConstraintAndHomomorphismNotSatisfied(invisibleToVisibleConstraints);

@@ -108,9 +108,8 @@ public class Chase {
 			for(Homomorphism homomorphism : homomorphisms){
 
 				fait = constraint.satisfyHomomorphism(instanceSchema, homomorphism);
-				if(fait != null && fait.getCpt() < limit){
+				if(fait != null && fait.getCpt() < limit)
 					return new Association(homomorphism, constraint, fait);
-				}
 			}
 		}
 		return null;

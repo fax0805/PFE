@@ -8,9 +8,9 @@ CQ vues
 
 Height of the tree = R x n^r x (| Q | + 1)
 R : nb Relation
-n : nb of values
+n : nb of values exported
 r : arity
-Q : nb of constraints
+Q : taille du secret
 
 Size of the tree = | nb of facts | ^ (height) +1
 
@@ -19,6 +19,50 @@ nb of facts : max(foreach relation, get the nb of constraints which can be match
 corriger la génération : toutes les variables doivent être différentes
 
 --------------------------------------------------------------------------------------
+
+Unification pendant, retenir tuples déjà générés
+
+
+But : proof concept/prototype
+pourquoi les gens n'ont pas fait le projet avant ? pleins d'implémentation du case. Unification c'est nouveau. (unificiation dû à la visibilité)
+(chercher chase sur Internet)
+Est ce que c'est mieux de faire l'unification pendant ?
+
+changer formule selon taille du cycle maximale
+et bien en parler dans le rapport : est ce que ça change en pratique ?
+
+NP-hard : on réduit notre problème (il existe PQI) à un autre problème d'inclusions de requêtes (C1 inclu C2) pour un problème d'arité 2 [foundation of database]
+Soit Q1 et Q2 (deux requ^tes conjonctives booléennes) et S un schéma d'arité 2 (arité doit petre bornée)
+
+S -> Sh U ( HOKQ1(x) )
+Sv -> { VOKQ1(x) } // dit que la requete est vraie
+Sh -> { VOKQ1 (x) }
+
+VOKQ1(x) equivalent HOKQ1(x) ^ Q1 
+
+il existe PQi(Sh, Sv, C, Q2) ssi Q1 inclu dans Q2
+
+_______
+
+Il existe PQI(Sh, Sv, C, Q2)
+-> Th LICS
+PQI (Sh, Sv, C, Q2, I{a})
+-> Th LICS
+chase + unificiation (C, I{a}) satisfait Q2
+-> Calcul du chase
+(HOKQ1(a), VOKQ1{a}) U IQ1 satisfait Q2
+-> justifier que toutes les valeurs de IQ1 sont différentes de a
+-> donc on peut enlever les HOKQ(a) et VOKQ(a)
+Iq1 satisfait Q2
+-> Th [ Foundation of database ]
+Il existe h tel que Q2 implique homomorphiquement Q1
+-> Th [Foundation of database]
+Q1 inclu Q2
+
+
+
+
+----------------------------------------------------------------------------------------
 
 Intro : 
 

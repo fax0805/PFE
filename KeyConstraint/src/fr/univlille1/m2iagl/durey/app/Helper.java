@@ -13,8 +13,8 @@ public class Helper {
 		return c;
 	}
 	
-	public static int computeTreeHeight(int nbInvisibleRelations, int arity){
-		return (int)(nbInvisibleRelations * /*Math.pow(arity, arity)*/ 1);
+	public static int computeTreeHeight(int biggestCycleSize, int secretSize){
+		return biggestCycleSize * secretSize;
 	}
 
 }

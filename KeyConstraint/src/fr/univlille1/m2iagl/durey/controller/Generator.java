@@ -85,7 +85,6 @@ public class Generator {
 
 		createAndAddKeyConstraintCycle();
 
-		System.out.println("Keys : " + keyConstraints);
 		for(int constraintInd=0;constraintInd<nbKeyConstraints-biggestCycleSize;constraintInd++){
 			keyConstraints.add(createKeyConstraint());
 		}

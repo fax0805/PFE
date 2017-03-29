@@ -66,7 +66,7 @@ public class StartSmallExample {
 		//int limit = Helper.computeTreeHeight(nbRelations, n, arity, nbConstraints);
 		
 		int limit = 20;
-		Chase chase = new Chase(instanceSchema, visibleToInvisibleConstraints, invisibleToVisibleConstraints, keyConstraints, limit);
+		Chase chase = new Chase(instanceSchema, visibleToInvisibleConstraints, invisibleToVisibleConstraints, keyConstraints, limit, 300000);
 		InstanceSchema newInstanceSchema = chase.run();
 		System.out.println("---------------------------------------------------");
 		System.out.println("Final instance : ");

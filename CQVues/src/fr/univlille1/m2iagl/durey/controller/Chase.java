@@ -21,13 +21,13 @@ public class Chase {
 	private InstanceSchema instanceSchema;
 	private List<VisibleToInvisibleConstraint> visibleToInvisibleConstraints;
 	private List<InvisibleToVisibleConstraint> invisibleToVisibleConstraints;
-	
+
 	public Chase(InstanceSchema instanceSchema, List<VisibleToInvisibleConstraint> visibleToInvisibleConstraints, List<InvisibleToVisibleConstraint> invisibleToVisibleConstraints){
 		this.instanceSchema = instanceSchema;
 		this.visibleToInvisibleConstraints = visibleToInvisibleConstraints;
 		this.invisibleToVisibleConstraints = invisibleToVisibleConstraints;
 	}
-	
+
 	/**
 	 * The chase algorithm
 	 * @return
@@ -43,23 +43,22 @@ public class Chase {
 		}
 
 		doUnificiation();
-	
 		return instanceSchema;
-	
+
 	}
-	
+
 	private void doUnificiation(){
-		
+
 		boolean added = true;
 		while(added){
 			added = false;
 			Association association = findConstraintAndHomomorphismNotSatisfied(invisibleToVisibleConstraints);
 
 			if(association != null){
-				
+
 				InvisibleToVisibleConstraint constraint = association.getConstraint();
 				Fait fait = association.getFait();
-							
+
 				Homomorphism homomorphism = Homomorphism.createHomomorphism(constraint.getRightVariables(), fait);
 				Homomorphism finalHomomorphism = association.getHomomorphism().changeHomomorphism(homomorphism);
 

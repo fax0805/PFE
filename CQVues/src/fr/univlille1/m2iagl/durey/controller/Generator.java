@@ -16,7 +16,7 @@ public class Generator {
 
 	private int nbRelations;
 	private int relationArity;
-	private int nbConstraint;
+	private int nbConstraints;
 	private int constraintSize;
 	private double visibleRelation;
 
@@ -25,20 +25,17 @@ public class Generator {
 	private List<InvisibleToVisibleConstraint> invisibleToVisible;
 	private List<VisibleToInvisibleConstraint> visibleToInvisible;
 
-	private List<Character> alreadyUsed;
 	private char current = 'a';
 
-	public Generator(int nbRelations, int relationArity, int nbConstraint, int constraintSize, double visibleRelation){
+	public Generator(int nbRelations, int relationArity, int nbConstraints, int constraintSize, double visibleRelation){
 		this.nbRelations = nbRelations;
 		this.relationArity = relationArity;
-		this.nbConstraint = nbConstraint;
+		this.nbConstraints = nbConstraints;
 		this.constraintSize = constraintSize;
 		this.visibleRelation = visibleRelation;
 
 		this.invisibleToVisible = new ArrayList<InvisibleToVisibleConstraint>();
 		this.visibleToInvisible = new ArrayList<VisibleToInvisibleConstraint>();
-
-		this.alreadyUsed = new ArrayList<Character>();
 
 		this.schema = new Schema();
 	}
@@ -64,7 +61,7 @@ public class Generator {
 	}
 
 	private void addConstraints(){
-		for(int constraintInd=0;constraintInd<nbConstraint/2;constraintInd++){
+		for(int constraintInd=0;constraintInd<nbConstraints/2;constraintInd++){
 			InvisibleToVisibleConstraint invisibleToVisibleConstraint = createInvisibleToVisibleConstraint();
 			invisibleToVisible.add(invisibleToVisibleConstraint);
 
@@ -83,6 +80,7 @@ public class Generator {
 			leftVars[i][0] = createConstraintsVars(relationArity);
 		}
 
+
 		RelationName rightRelationName = getRandomVisibleRelationName(schema);
 
 		char [] rightVars = createConstraintsVars(relationArity);
@@ -97,25 +95,25 @@ public class Generator {
 		char[] leftVars = invisibleToVisible.getRightVariables();
 
 		char [][][] rightVars = new char[constraintSize][1][relationArity];
-		
+
 		List<RelationName> rightRelationNames = new ArrayList<RelationName>();
 		List<RelationName> relationNames = new ArrayList<RelationName>(invisibleToVisible.getLeftConstraintElementGroup().keySet());
 
 		ConstraintElementGroup constraintElementGroup = invisibleToVisible.getLeftConstraintElementGroup();
-		
+
 		int cpt = 0;
 		for(int i=0;i<relationNames.size();i++){
 			RelationName relationName = relationNames.get(i);
 			ConstraintElement[] constraintElement = constraintElementGroup.get(relationName);
 			for(int j=0;j<constraintElement.length;j++){
-				
+
 				rightRelationNames.add(relationName);
 				rightVars[cpt][0] = invisibleToVisible.getLeftConstraintElementGroup().getVariablesOf(relationName, j);
-				
+
 				cpt++;
 			}
 		}
-		
+
 		return new VisibleToInvisibleConstraint(leftRelationName, leftVars, rightRelationNames.toArray(new RelationName[rightRelationNames.size()]), rightVars);
 	}
 
@@ -123,21 +121,23 @@ public class Generator {
 		char [] constraintVars = new char[size];
 		Random random = new Random();
 
+		List<Character> alreadyUsed = new ArrayList<Character>();
+
+
 		for(int i=0;i<size;i++){
 			char c = ' ';
 			if(random.nextDouble() < 0.8 && alreadyUsed.size() != 0){
-				// Utilisation d'une ancienne, mais pas déjà utilisé
-				boolean alreadyInTheConstraint = true;
-			
-				while(alreadyInTheConstraint){
-					c = alreadyUsed.get(random.nextInt(alreadyUsed.size()));
-					
+				// Utilisation d'une ancienne
+
+				//while(alreadyInTheConstraint){
+				c = alreadyUsed.get(random.nextInt(alreadyUsed.size()));
+				/*
 					alreadyInTheConstraint = false;
 					for(int j=0;j<i;j++){
 						if(c == constraintVars[j])
 							alreadyInTheConstraint = true;
 					}
-				}
+			}*/
 			} else {
 				// Creating d'une nouvelle variable dans le tableau
 				c = current++;

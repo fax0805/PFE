@@ -26,15 +26,17 @@ public class Chase {
 	private List<InvisibleToInvisibleConstraint> invisibleToInvisibleConstraints;
 	private List<InvisibleToVisibleConstraint> invisibleToVisibleConstraints;
 
-	private int limit;
+	private int limit, limitTime;
+	private long currentTime;
 
-	public Chase(InstanceSchema instanceSchema, List<VisibleToInvisibleConstraint> visibleToInvisibleConstraints, List<InvisibleToVisibleConstraint> invisibleToVisibleConstraints, List<InvisibleToInvisibleConstraint> invisibleToInvisibleConstraints, int limit){
+	public Chase(InstanceSchema instanceSchema, List<VisibleToInvisibleConstraint> visibleToInvisibleConstraints, List<InvisibleToVisibleConstraint> invisibleToVisibleConstraints, List<InvisibleToInvisibleConstraint> invisibleToInvisibleConstraints, int limit, int limitTime){
 		this.instanceSchema = instanceSchema;
 		this.visibleToInvisibleConstraints = visibleToInvisibleConstraints;
 		this.invisibleToInvisibleConstraints = invisibleToInvisibleConstraints;
 		this.invisibleToVisibleConstraints = invisibleToVisibleConstraints;
 
 		this.limit = limit;
+		this.limitTime = limitTime;
 	}
 
 	/**
@@ -42,21 +44,17 @@ public class Chase {
 	 * @return
 	 */
 	public InstanceSchema run(){
+		
+		currentTime = System.currentTimeMillis();
 		InstanceSchema instanceSchema = new InstanceSchema(this.instanceSchema);
-		System.out.println("--------------------");
-		System.out.println("Initial : instanceSchema.size() : " + instanceSchema.getNbFacts());
 		/* First part of the chase algorithm */
 		for(VisibleToInvisibleConstraint constraint : visibleToInvisibleConstraints){
 			if(!instanceSchema.satisfy(constraint)){
 				instanceSchema.addAll(Fait.createFaitsForMatching(instanceSchema, constraint, 0));
 			}
 		}
-		System.out.println("After dealing with visibleToInvisibleConstraint : instanceSchema.size() : " + instanceSchema.getNbFacts());
-
 
 		dealWithKeysConstraints();
-		System.out.println("After dealing with keyConstraint : instanceSchema.size() : " + instanceSchema.getNbFacts());
-
 
 		doUnificiation();
 
@@ -65,7 +63,7 @@ public class Chase {
 
 	private void dealWithKeysConstraints(){
 		boolean added = true;
-		while(added){
+		while(added && currentTime + limitTime > System.currentTimeMillis()){
 
 			added = false;
 			Association association = findInvisibleToInvisibleConstraintHomomorphismAndFactNotSatisfied(invisibleToInvisibleConstraints);
@@ -83,7 +81,7 @@ public class Chase {
 	private void doUnificiation(){
 
 		boolean added = true;
-		while(added){
+		while(added && currentTime + limitTime > System.currentTimeMillis()){
 			added = false;
 			Association association = findInvisibleToVisibleConstraintHomomorphismAndFactNotSatisfied(invisibleToVisibleConstraints);
 

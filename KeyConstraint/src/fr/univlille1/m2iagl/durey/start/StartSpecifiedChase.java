@@ -13,7 +13,7 @@ import fr.univlille1.m2iagl.durey.model.constraint.InvisibleToInvisibleConstrain
 
 public class StartSpecifiedChase {
 	
-	public static void start(PrintWriter printWriter, int nbRelations, int relationArity, int nbConstraints, int constraintSize, int nbKeyConstraints, double visibleRelations, int biggestCycleSize, int secretSize){
+	public static void start(PrintWriter printWriter, int nbRelations, int relationArity, int nbConstraints, int constraintSize, int nbKeyConstraints, double visibleRelations, int biggestCycleSize, int secretSize, int limitTime){
 
 		// (int nbRelations, int relationArity, int nbConstraint, int constraintSize, double visibleRelation, double visibleToInvisibleConstraint)
 		try {
@@ -29,18 +29,23 @@ public class StartSpecifiedChase {
 			graph.run();
 			int nbCycles = graph.getAllCycles().size();
 			biggestCycleSize = graph.getBiggestCycle().size();
-			System.out.println("BiggestCycle : " + biggestCycleSize);
 			
 			int limit = Helper.computeTreeHeight(biggestCycleSize, secretSize);
 			
-			Chase chase = new Chase(instanceSchema, generator.getVisibleToInvisible(), generator.getInvisibleToVisible(), keyConstraints, limit);
+			
+			System.out.print(nbRelations + ", " + relationArity + ", " + nbConstraints + ", " + constraintSize + ", " + visibleRelations + ", " + nbKeyConstraints + ", " + nbBefore + ", ");
+
+			
+			
+			Chase chase = new Chase(instanceSchema, generator.getVisibleToInvisible(), generator.getInvisibleToVisible(), keyConstraints, limit, limitTime);
 
 			long time = System.currentTimeMillis();
 			instanceSchema = chase.run();
 			int nbAfter = instanceSchema.getNbFacts();
 			long timeBis = System.currentTimeMillis();
 			
-			printWriter.println(nbRelations + ", " + relationArity + ", " + nbConstraints + ", " + constraintSize + ", " + visibleRelations + ", " + nbKeyConstraints + ", " + nbBefore + ", " + nbAfter + ", " + (timeBis - time) + ", " + nbCycles + ", " + biggestCycleSize);
+			System.out.println(nbAfter + ", " + (timeBis - time) + ", " + nbCycles + ", " + biggestCycleSize);
+			
 
 		} catch(Exception e){
 			e.printStackTrace();

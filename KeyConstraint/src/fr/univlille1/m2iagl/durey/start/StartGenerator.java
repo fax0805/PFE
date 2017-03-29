@@ -9,7 +9,7 @@ import java.util.Properties;
 public class StartGenerator {
 
 	public static void main(String [] args) throws IOException, InterruptedException{
-
+		
 		PrintWriter printWriter = new PrintWriter(new File("results/comparaison.csv"));
 		printWriter.println("nbRelations, relationArity, nbConstraints, constraintSize, visibleRelations, nbKeyConstraints, initialSchemaSize, finalSchemaSize, time (ms), nbCycles, biggestCycle");
 
@@ -23,7 +23,11 @@ public class StartGenerator {
 		int nbKeyConstraints = Integer.parseInt(properties.getProperty("NB_KEY_CONSTRAINTS"));
 		double visibleRelations = Double.parseDouble(properties.getProperty("VISIBLE_RELATIONS"));
 
+		System.out.println(properties.getProperty("LIMIT_TIME"));
+		
 		int nbTimes = Integer.parseInt(properties.getProperty("NB_TIMES"));
+		int limitTime = Integer.parseInt(properties.getProperty("LIMIT_TIME"));
+
 		
 		int biggestCycleSize = Integer.parseInt(properties.getProperty("BIGGEST_CYCLE_SIZE"));
 		
@@ -32,9 +36,8 @@ public class StartGenerator {
 		int i=0;
 
 		for(int j=0;j<nbTimes;j++){
-			StartSpecifiedChase.start(printWriter, nbRelations, relationArity, nbConstraints, constraintSize, nbKeyConstraints, visibleRelations, biggestCycleSize, secretSize);
+			StartSpecifiedChase.start(printWriter, nbRelations, relationArity, nbConstraints, constraintSize, nbKeyConstraints, visibleRelations, biggestCycleSize, secretSize, limitTime);
 
-			System.out.println("i : " + i);
 			i++;
 		}
 

@@ -14,6 +14,7 @@ public class StartSpecifiedChase {
 		try {
 			Generator generator = new Generator(nbRelations, relationArity, nbConstraints, constraintSize, visibleRelations);
 			generator.generate();
+			
 
 			InstanceSchema instanceSchema = InstanceSchema.createBasicInstanceSchema(generator.getSchema());
 
